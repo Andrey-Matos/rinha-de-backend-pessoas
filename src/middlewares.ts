@@ -1,5 +1,6 @@
 import { Hono, type Context, type Next } from "hono";
 import { Redis } from "@upstash/redis";
+import { CtxKeys } from "./consts.js";
 
 const app = new Hono();
 const redis = new Redis({
@@ -10,7 +11,7 @@ const redis = new Redis({
 const cachePut = async (c: Context, next: Next) => {
   await next();
 
-  const uuid: string = c.get("uuid");
+  const uuid: string = c.get(CtxKeys.UUID);
 
   if (!uuid) {
     console.warn("No UUID found for this request. Skipping cache.");
@@ -25,7 +26,7 @@ const cachePut = async (c: Context, next: Next) => {
 const cacheGet = async (c: Context, next: Next) => {
   await next();
 
-  const uuid: string = c.get("uuid");
+  const uuid: string = c.get(CtxKeys.UUID);
 
   if (!uuid) {
     console.warn("No UUID found for this request. Skipping cache.");
@@ -33,5 +34,5 @@ const cacheGet = async (c: Context, next: Next) => {
   }
 
   const cached: string | null = await redis.get(uuid);
-  c.set("cached", cached);
+  c.set(CtxKeys.CACHED, cached);
 };
