@@ -1,6 +1,9 @@
-import { CtxKeys } from "../consts.js";
+export const contextVariables = {
+  UUID: "uuid",
+  CACHED: "cached",
+} as const;
 
-export type Variables = {
-  uuid: string;
-  cached: string;
-};
+export type ContextVariables = Record<
+  (typeof contextVariables)[keyof typeof contextVariables],
+  string
+>;
